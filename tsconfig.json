@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+
+    "paths": {
+      "@utils/*": ["./utils/*"]
+    },
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "target": "ESNext"
+  },
+  "include": ["src/**/*.ts"]
+}
