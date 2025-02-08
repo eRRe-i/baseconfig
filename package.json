@@ -14,10 +14,14 @@
     "templates"
   ],
   "dependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "@eslint/js": "^9.19.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.13.1",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
+    "commitlint": "^19.7.1",
     "dotenv": "^16.4.7",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
@@ -28,7 +32,6 @@
     "husky": "^8.0.0",
     "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
-    "ts-node": "^10.9.2",
     "tsx": "^4.19.2"
   },
   "lint-staged": {
@@ -36,12 +39,6 @@
       "prettier --write",
       "eslint --fix"
     ]
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.7.1",
-    "@commitlint/config-conventional": "^19.7.1",
-    "@types/fs-extra": "^11.0.4",
-    "commitlint": "^19.7.1"
   },
   "scripts": {
     "prepare": "husky install",
