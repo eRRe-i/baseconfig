@@ -1,3 +1,8 @@
 {
-  "prettier": [".prettierrc.json"]
+  "commitlint": ["commitlint.config.js", ".husky/_/.gitignore", ".husky/commit-msg"],
+  "editorconfig": [".editorconfig"],
+  "eslint": ["eslint.config.js"],
+  "lint-staged": ["eslint.config.js", ".husky/_/.gitignore", ".husky/pre-commit"],
+  "prettier": [".prettierrc.json"],
+  "typescript": ["tsconfig.json"]
 }

@@ -14,6 +14,10 @@
     ],
     "scripts": ["lint"]
   },
+  "editorconfig": {
+    "dependencies": [],
+    "scripts": []
+  },
   "typescript": {
     "dependencies": [
       "typescript",
@@ -33,7 +37,7 @@
     "scripts": []
   },
   "lint-staged": {
-    "dependencies": ["lint-staged", "husky"],
+    "dependencies": ["lint-staged", "eslint", "husky"],
     "scripts": [],
     "config": {
       "*.{js,ts}": ["prettier --write", "eslint --fix"]
