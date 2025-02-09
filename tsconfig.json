@@ -11,5 +11,5 @@
     "esModuleInterop": true,
     "target": "ESNext"
   },
-  "include": ["src/**/*.ts", "interfaces/**/*.ts"]
+  "include": ["**/*.ts", "sum.mjs"]
 }

@@ -43,6 +43,7 @@ export default [
     rules: {
       'prettier/prettier': 'error',
       'no-console': 'warn',
+      'no-undef': 'off',
       'import/order': [
         'error',
         {
