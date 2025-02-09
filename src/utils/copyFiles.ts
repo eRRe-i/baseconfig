@@ -18,18 +18,15 @@ export class CopyFiles {
     if (!this.src) {
       throw new Error('Caminho de origem não especificado.')
     }
-
     if (!this.dest) {
       throw new Error('Caminho de destino não especificado.')
     }
-
     if (!tool) {
       throw new Error('Nenhuma ferramenta especificada.')
     }
 
     const mapping = this.fileMapping[tool]
 
-    // Cria o diretório de destino se não existir
     await mkdir(this.dest, { recursive: true })
 
     for (const file of mapping) {
@@ -40,7 +37,11 @@ export class CopyFiles {
       const srcPath = path.join(this.src, tool, file)
       const destPath = path.join(this.dest, file)
 
+      const destDir = path.dirname(destPath)
+
       try {
+        await mkdir(destDir, { recursive: true })
+
         await copyFile(srcPath, destPath)
         console.log(`✅ Arquivo "${file}" copiado com sucesso para ${destPath}.`)
       } catch (err) {
