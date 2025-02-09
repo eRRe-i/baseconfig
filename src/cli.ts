@@ -23,13 +23,9 @@ if (!process.env.NODE_ENV) {
   process.exit(1)
 }
 
-// Define se está em modo de desenvolvimento
 const isDev = process.env.NODE_ENV !== 'production'
-
-// Caminho de destino (tmp/ em desenvolvimento, raiz em produção)
 const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
 
-// Cria o diretório de destino se não existir
 if (isDev && !existsSync(distDev)) {
   mkdirSync(distDev, { recursive: true })
 }
@@ -37,17 +33,11 @@ if (isDev && !existsSync(distDev)) {
 // Caminho para os templates
 const templatesPath = path.join(__dirname, '..', 'templates')
 
-// Verifica se as ferramentas foram passadas como argumento
-if (process.argv.length < 3) {
-  console.error('Erro: Nenhuma ferramenta especificada.')
-  console.log('Uso: meu-cli <ferramenta1> <ferramenta2> ...')
-  process.exit(1)
-}
-
 // Lê os arquivos JSON
 const packageJson: PackageJson = await fs.readJson('./data/packageAttributes.json')
 const toolMappings: ToolMappings = await fs.readJson('./data/toolMappings.json')
 const fileMapping: FileMapping = await fs.readJson('./data/fileMapping.json')
+const toolList: Record<string, string[]> = await fs.readJson('./data/toolList.json')
 
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
@@ -58,8 +48,19 @@ const packageJsonReaderUtil = new PackageJsonReader(
   distDev,
 )
 
-// Obtém as ferramentas a partir dos argumentos da linha de comando
-const tools = process.argv.slice(2) // Pega todos os argumentos a partir do índice 2
+const argTools = process.argv.slice(2)
+let tools: string[] = []
+
+if (!argTools) {
+  tools = toolList.list
+} else {
+  argTools.forEach((tool: string) => {
+    if (!toolList.list.some((t) => tool === t)) {
+      throw new Error(`ferramenta ${tool} não existe na lista`)
+    }
+  })
+  tools = toolList.list
+}
 
 // Processa cada ferramenta
 for (const tool of tools) {
