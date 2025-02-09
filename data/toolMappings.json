@@ -1,0 +1,42 @@
+{
+  "commitlint": {
+    "dependencies": ["@commitlint/cli", "@commitlint/config-conventional", "husky"],
+    "scripts": []
+  },
+  "eslint": {
+    "dependencies": [
+      "eslint",
+      "@eslint/js",
+      "eslint-config-prettier",
+      "eslint-plugin-import",
+      "eslint-plugin-prettier",
+      "eslint-plugin-unused-imports"
+    ],
+    "scripts": ["lint"]
+  },
+  "typescript": {
+    "dependencies": [
+      "typescript",
+      "@types/node",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "tsx"
+    ],
+    "scripts": ["dev", "build"]
+  },
+  "husky": {
+    "dependencies": ["husky"],
+    "scripts": ["prepare"]
+  },
+  "prettier": {
+    "dependencies": ["prettier"],
+    "scripts": []
+  },
+  "lint-staged": {
+    "dependencies": ["lint-staged", "husky"],
+    "scripts": [],
+    "config": {
+      "*.{js,ts}": ["prettier --write", "eslint --fix"]
+    }
+  }
+}
