@@ -1,3 +1,1 @@
-{
-  "list": ["prettier", "eslint", "commitlint", "lint-staged", "editorconfig", "typescript"]
-}
+["prettier", "eslint", "commitlint", "lint-staged", "editorconfig", "typescript"]
