@@ -18,9 +18,6 @@ export default [
   {
     // Configuração para arquivos TypeScript
     files: ['**/*.ts'],
-    env: {
-      jest: true,
-    },
     languageOptions: {
       parser: tsparser,
       parserOptions: {
