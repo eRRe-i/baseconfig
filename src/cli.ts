@@ -37,7 +37,7 @@ const templatesPath = path.join(__dirname, '..', 'templates')
 const packageJson: PackageJson = await fs.readJson('./data/packageAttributes.json')
 const toolMappings: ToolMappings = await fs.readJson('./data/toolMappings.json')
 const fileMapping: FileMapping = await fs.readJson('./data/fileMapping.json')
-const toolList: Record<string, string[]> = await fs.readJson('./data/toolList.json')
+const toolList: string[] = await fs.readJson('./data/toolList.json')
 
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
@@ -49,18 +49,8 @@ const packageJsonReaderUtil = new PackageJsonReader(
 )
 
 const argTools = process.argv.slice(2)
-let tools: string[] = []
 
-if (!argTools) {
-  tools = toolList.list
-} else {
-  argTools.forEach((tool: string) => {
-    if (!toolList.list.some((t) => tool === t)) {
-      throw new Error(`ferramenta ${tool} não existe na lista`)
-    }
-  })
-  tools = toolList.list
-}
+const tools = validateTools(argTools, toolList)
 
 // Processa cada ferramenta
 for (const tool of tools) {
@@ -78,3 +68,18 @@ for (const tool of tools) {
     console.error(`❌ Erro ao processar a ferramenta "${tool}":`, err.message)
   }
 }
+
+function validateTools(argTools: string[], toolList: string[]) {
+  if (!argTools) {
+    return toolList
+  } else {
+    argTools.forEach((tool: string) => {
+      if (!toolList.some((t) => tool === t)) {
+        throw new Error(`ferramenta ${tool} não existe na lista`)
+      }
+    })
+    return toolList
+  }
+}
+
+export { validateTools }
