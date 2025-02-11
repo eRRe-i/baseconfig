@@ -5,11 +5,12 @@
     "moduleResolution": "nodenext",
 
     "paths": {
-      "@utils/*": ["./utils/*"]
+      "@utils/*": ["./utils/*"],
+      "@interfaces/*": ["./interfaces/*"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,
     "target": "ESNext"
   },
-  "include": ["**/*.ts", "sum.mjs"]
+  "include": ["**/*.ts", "tests"]
 }
