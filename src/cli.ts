@@ -7,8 +7,9 @@ import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
 import { FileMapping } from 'interfaces/fileInterface.interface.js'
+import { HuskyUtil } from '@utils/copyHuskyfiles.js'
+import { CopyFiles } from '@utils/copyFiles.js'
 
-import { CopyFiles } from './utils/copyFiles.js'
 import { PackageJsonReader } from './utils/packageJsonReader.js'
 import { PackageJson, ToolMappings } from './interfaces/package.interface.js'
 
@@ -38,9 +39,12 @@ const packageJson: PackageJson = await fs.readJson('./data/packageAttributes.jso
 const toolMappings: ToolMappings = await fs.readJson('./data/toolMappings.json')
 const fileMapping: FileMapping = await fs.readJson('./data/fileMapping.json')
 const toolList: string[] = await fs.readJson('./data/toolList.json')
+const huskyMapping = await fs.readJson('./data/huskyMapping.json')
 
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
+const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)
+
 const packageJsonReaderUtil = new PackageJsonReader(
   packageJson,
   toolMappings,
@@ -60,6 +64,8 @@ for (const tool of tools) {
     // Copia os arquivos do template para o diretório de destino
     await copyFilesUtil.copyFilesFromTemplate(tool)
 
+    await copyHuskyFiles.copyHuskyFiles(tool)
+
     // Configura o package.json com as dependências e scripts da ferramenta
     await packageJsonReaderUtil.setupTool(tool)
 
@@ -78,7 +84,7 @@ function validateTools(argTools: string[], toolList: string[]) {
         throw new Error(`ferramenta ${tool} não existe na lista`)
       }
     })
-    return toolList
+    return argTools
   }
 }
 
