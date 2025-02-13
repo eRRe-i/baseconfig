@@ -2,15 +2,29 @@
   "name": "@leandrobataglia/baseconfig",
   "type": "module",
   "version": "1.1.0",
+  "imports": {
+    "#utils/*": "./dist/src/utils/*",
+    "#interfaces/*": "./dist/src/interfaces/*",
+    "#data/*": "./dist/data/*"
+  },
+  "_moduleAliases": {
+    "@utils/*": [
+      "./utils/*"
+    ],
+    "@interfaces/*": [
+      "./interfaces/*"
+    ]
+  },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
   "bin": {
-    "baseconfig": ".dist//src/cli.ts"
+    "baseconfig": "./src/cli.ts"
   },
   "files": [
-    "dist"
+    "cli.ts",
+    "templates"
   ],
   "dependencies": {
     "dotenv": "^16.4.7",
@@ -23,14 +37,11 @@
     ]
   },
   "scripts": {
-    "prepare": "husky install",
-    "lint": "eslint .",
-    "fix": "eslint . --fix",
-    "cli": "tsx ./src/cli.ts",
-    "dcli": "node ./dist/src/cli.js",
-    "build": "tsc",
+    "cli": "node ./src/cli.js",
+    "build": "tsc && tsc-alias",
     "clrtmp": "rm -r tmp",
-    "test": "clear && node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "clear && node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "start": "node -r tsconfig-paths/register dist/src/cli.js"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
@@ -43,7 +54,7 @@
     "@typescript-eslint/parser": "^8.23.0",
     "ci": "^2.3.0",
     "commitlint": "^19.7.1",
-    "eslint": "^9.19.0",
+    "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
@@ -53,9 +64,11 @@
     "jest": "^29.7.0",
     "jest-esm-transformer": "^1.0.0",
     "lint-staged": "^15.4.3",
+    "module-alias": "^2.2.3",
     "prettier": "^3.4.2",
     "semantic-release": "^24.2.2",
     "ts-jest": "^29.2.5",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2"
   }
 }

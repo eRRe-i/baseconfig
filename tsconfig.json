@@ -3,15 +3,17 @@
     "baseUrl": "./src",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-
     "paths": {
       "@utils/*": ["./utils/*"],
-      "@interfaces/*": ["./interfaces/*"],
-      "@data/*": ["./data/*"]
+      "@interfaces/*": ["./interfaces/*"]
     },
+    "rootDir": ".",
     "outDir": "./dist",
     "esModuleInterop": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "types": ["node"], // Adicione esta linha
+    "typeRoots": ["./node_modules/@types"] // Adicione esta linha
   },
-  "include": ["**/*.ts", "tests"]
+  "include": ["src/**/*", "eslint.config.js", "logger.ts", "tests/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
