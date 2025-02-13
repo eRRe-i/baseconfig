@@ -6,12 +6,12 @@
 
     "paths": {
       "@utils/*": ["./utils/*"],
-      "@interfaces/*": ["./interfaces/*"],
-      "@data/*": ["./data/*"]
+      "@interfaces/*": ["./interfaces/*"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,
     "target": "ESNext"
   },
-  "include": ["**/*.ts", "tests"]
+  "include": ["src/*", "eslint.config.js", "logger.ts"],
+  "exclude": ["node_modules"]
 }
