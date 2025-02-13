@@ -3,7 +3,7 @@
 import path, { dirname } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import { fileURLToPath } from 'url'
-
+import { logger } from './../logger.js'
 import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
 import { FileMapping } from 'interfaces/fileInterface.interface.js'
@@ -20,7 +20,7 @@ const __dirname = dirname(__filename)
 
 // Verifica se o NODE_ENV está definido
 if (!process.env.NODE_ENV) {
-  console.error('Erro: NODE_ENV não está definido.')
+  logger.error('Erro: NODE_ENV não está definido.')
   process.exit(1)
 }
 
@@ -56,32 +56,32 @@ const argTools = process.argv.slice(2)
 
 const tools = validateTools(argTools, toolList)
 
-// Processa cada ferramenta
 for (const tool of tools) {
   try {
-    console.log(`\n🛠️  Configurando a ferramenta "${tool}"...`)
+    logger.message(`\n🛠️  Configurando a ferramenta "${tool}"...`)
 
-    // Copia os arquivos do template para o diretório de destino
     await copyFilesUtil.copyFilesFromTemplate(tool)
-
     await copyHuskyFiles.copyHuskyFiles(tool)
-
-    // Configura o package.json com as dependências e scripts da ferramenta
     await packageJsonReaderUtil.setupTool(tool)
 
-    console.log(`✅ Ferramenta "${tool}" configurada com sucesso!`)
+    logger.success(`"${tool}" configurada com sucesso!`)
   } catch (err) {
-    console.error(`❌ Erro ao processar a ferramenta "${tool}":`, err.message)
+    logger.error(`Erro ao processar a ferramenta "${tool}":`, err.message)
+    throw err
   }
 }
+const tack = performance.now()
+logger.clock(`${(tack - tick).toFixed(2)} ms`)
 
 function validateTools(argTools: string[], toolList: string[]) {
-  if (!argTools) {
+  if (argTools.length === 0) {
     return toolList
   } else {
     argTools.forEach((tool: string) => {
       if (!toolList.some((t) => tool === t)) {
-        throw new Error(`ferramenta ${tool} não existe na lista`)
+        const err = new Error(`ferramenta ${tool} não existe na lista`)
+        logger.error(`Error: ${err.message}`, err)
+        throw err
       }
     })
     return argTools

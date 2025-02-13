@@ -1,8 +1,8 @@
 import path from 'path'
 import { constants } from 'fs'
 import { mkdir, copyFile } from 'fs/promises'
-
-import fs from 'fs-extra'
+import fs, { exists } from 'fs-extra'
+import { logger } from './../../logger.js'
 import { HuskyMapping } from '@interfaces/huskyMappping.interface.js'
 
 export class HuskyUtil {
@@ -18,14 +18,15 @@ export class HuskyUtil {
 
   async copyHuskyFiles(tool: string) {
     if (!(tool in this.mapping)) {
-      console.log(`No ${tool}`)
       return undefined
     }
 
     try {
       await fs.access(this.src)
     } catch {
-      throw new Error('Arquivo de origem não existe')
+      const err = new Error(`Arquivo ${this.src} origem não existe`)
+      logger.error(`Erro: ${err.message}`, err)
+      throw err
     }
 
     await mkdir(this.dest, { recursive: true }) //cria templates
@@ -40,23 +41,27 @@ export class HuskyUtil {
     for (const file of mapping[tool].files) {
       const srcPath = path.join(this.src, file)
       const destPath = path.join(this.dest, file)
-      // console.log(srcPath)
-      // console.log(destPath)
       const destDir = path.dirname(destPath)
       try {
         await mkdir(destDir, { recursive: true })
       } catch (err) {
-        throw new Error(`Falha ao criar diretório "${destDir}": ${err.message}`)
+        logger.error(`Falha ao criar diretório em "${destDir}": ${err.message}`, err)
+        throw err
       }
       try {
         await copyFile(srcPath, destPath, constants.COPYFILE_EXCL)
-        console.log(`✅ "${file}"`)
+        logger.success(`${file} copiado`)
       } catch (err) {
-        console.log(`❌ Falha ao copiar o arquivo "${file}": ${err.message}`)
+        if (err.code === 'EEXIST') {
+          continue
+        } else {
+          logger.error(`Erro ao copiar o arquivo ${file}: ${err.message}`, err)
+          throw err
+        }
       }
     }
   }
-  async appendFiles(mapping, tool: string, file: string) {
+  async appendFiles(mapping: HuskyMapping, tool: string, file: string) {
     if (!mapping[tool]?.[file]?.filePath) {
       return
     }
@@ -67,16 +72,18 @@ export class HuskyUtil {
       }
     }
     try {
-      await fs.access(destPath) // Verifica se o arquivo existe
+      await fs.access(destPath)
     } catch (err) {
-      throw new Error(`Arquivo de destino não existe: : ${err.message}`)
+      logger.error(`Erro de acesso ao arquivo ${file}: ${err.message}`)
+      throw err
     }
     mapping[tool]?.[file]?.content.forEach(async (value) => {
       try {
         await fs.appendFile(destPath, value)
-        console.log(`✅ "${file} atualizado"`)
+        logger.success(`${file} atualizado`)
       } catch (err) {
-        throw new Error(`Arquivo de destino não existe: : ${err.message}`)
+        logger.error(`Erro : ${err.message}`)
+        throw err
       }
     })
   }

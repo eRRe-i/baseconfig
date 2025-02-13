@@ -1,7 +1,7 @@
 import { copyFile, mkdir } from 'fs/promises'
 import path from 'path'
-
 import { FileMapping } from 'interfaces/fileInterface.interface.js'
+import { logger } from '../../logger.js'
 
 export class CopyFiles {
   private src: string
@@ -16,13 +16,19 @@ export class CopyFiles {
 
   async copyFilesFromTemplate(tool: string): Promise<void> {
     if (!this.src) {
-      throw new Error('Caminho de origem não especificado.')
+      const err = new Error('Caminho de origem não especificado.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
     }
     if (!this.dest) {
-      throw new Error('Caminho de destino não especificado.')
+      const err = new Error('Caminho de destino não especificado.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
     }
     if (!tool) {
-      throw new Error('Nenhuma ferramenta especificada.')
+      const err = new Error('Nenhuma ferramenta especificada.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
     }
 
     const mapping = this.fileMapping[tool]
@@ -31,7 +37,9 @@ export class CopyFiles {
 
     for (const file of mapping) {
       if (!file) {
-        throw new Error('Nome do arquivo não especificado.')
+        const err = new Error('Nome do arquivo não especificado.')
+        logger.error(`Error em ${tool}: ${err.message}`, err)
+        process.exit(1)
       }
 
       const srcPath = path.join(this.src, tool, file)
@@ -43,9 +51,9 @@ export class CopyFiles {
         await mkdir(destDir, { recursive: true })
 
         await copyFile(srcPath, destPath)
-        console.log(`✅ Arquivo "${file}" copiado com sucesso para ${destPath}.`)
+        logger.success(`${file}`)
       } catch (err) {
-        throw new Error(`❌ Falha ao copiar o arquivo "${file}": ${err.message}`)
+        logger.error(`Falha ao copiar o arquivo "${file}": ${err.message}`, err)
       }
     }
   }
