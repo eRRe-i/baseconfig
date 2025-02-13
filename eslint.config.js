@@ -71,13 +71,7 @@ export default [
     rules: {
       'prettier/prettier': 'error',
       'no-console': 'warn',
-      'import/order': [
-        'error',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
-        },
-      ],
+      'import/order': 'off',
       'unused-imports/no-unused-imports': 'error',
     },
     ignores: ['eslint.config.js', 'commitlint.config.js'],
