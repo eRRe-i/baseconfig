@@ -61,6 +61,11 @@ export class HuskyUtil {
       return
     }
     const destPath = path.join(this.dest, mapping[tool]?.[file]?.filePath)
+    if (await exists(destPath)) {
+      if (mapping[tool]?.[file]?.content.length) {
+        logger.warn(`Chamadas sucessivas de ${tool} podem levar a inconsistências em ${file}`)
+      }
+    }
     try {
       await fs.access(destPath) // Verifica se o arquivo existe
     } catch (err) {
