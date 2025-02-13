@@ -4,12 +4,10 @@
     "module": "NodeNext",
     "moduleResolution": "nodenext",
 
-    "paths": {
-      "@utils/*": ["./utils/*"]
-    },
+    "paths": {},
     "outDir": "./dist",
     "esModuleInterop": true,
     "target": "ESNext"
   },
-  "include": ["src/**/*.ts", "data/**/*.ts", "data/**/*.ts"]
+  "include": ["**/*.ts", "tests"]
 }

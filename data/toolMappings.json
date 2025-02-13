@@ -12,7 +12,7 @@
       "eslint-plugin-prettier",
       "eslint-plugin-unused-imports"
     ],
-    "scripts": ["lint"]
+    "scripts": ["lint", "fix"]
   },
   "editorconfig": {
     "dependencies": [],
@@ -37,10 +37,18 @@
     "scripts": []
   },
   "lint-staged": {
-    "dependencies": ["lint-staged", "eslint", "husky"],
+    "dependencies": ["lint-staged", "eslint", "prettier", "husky"],
     "scripts": [],
-    "config": {
+    "lint-staged": {
       "*.{js,ts}": ["prettier --write", "eslint --fix"]
     }
+  },
+  "jest": {
+    "dependencies": ["@types/jest", "jest", "jest-esm-transformer", "ts-jest, husky"],
+    "scripts": ["test"]
+  },
+  "logger": {
+    "dependencies": ["winston"],
+    "scripts": []
   }
 }

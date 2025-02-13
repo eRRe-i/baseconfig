@@ -44,13 +44,7 @@ export default [
       'prettier/prettier': 'error',
       'no-console': 'warn',
       'no-undef': 'off',
-      'import/order': [
-        'error',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
-        },
-      ],
+      'import/order': 'off',
       'unused-imports/no-unused-imports': 'error',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
