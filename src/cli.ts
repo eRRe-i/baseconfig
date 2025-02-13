@@ -9,9 +9,11 @@ import * as dotenv from 'dotenv'
 import { FileMapping } from 'interfaces/fileInterface.interface.js'
 import { HuskyUtil } from '@utils/copyHuskyfiles.js'
 import { CopyFiles } from '@utils/copyFiles.js'
-
 import { PackageJsonReader } from './utils/packageJsonReader.js'
 import { PackageJson, ToolMappings } from './interfaces/package.interface.js'
+import { performance } from 'perf_hooks'
+
+const tick = performance.now()
 
 dotenv.config()
 
