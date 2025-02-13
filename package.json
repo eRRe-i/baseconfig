@@ -7,7 +7,7 @@
     "experimentalSpecifierResolution": "node"
   },
   "bin": {
-    "baseconfig": "./dist/src/cli.ts"
+    "baseconfig": "./dist/src/cli.js"
   },
   "files": [
     "dist"
