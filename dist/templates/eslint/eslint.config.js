@@ -1,3 +1,6 @@
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import tseslint from '@typescript-eslint/eslint-plugin'
@@ -5,22 +8,17 @@ import tsparser from '@typescript-eslint/parser'
 import prettier from 'eslint-plugin-prettier'
 import importPlugin from 'eslint-plugin-import'
 import unusedImports from 'eslint-plugin-unused-imports'
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
 const compat = new FlatCompat()
 
 export default [
   js.configs.recommended,
   {
-    ignores: ['dist/**', 'node_modules/**', 'templates/**'],
-  },
-  {
     // Configuração para arquivos TypeScript
     files: ['**/*.ts'],
-    ignores: ['dist/**', 'templates/**'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -53,26 +51,6 @@ export default [
     },
   },
   {
-    // Configuração para arquivos JavaScript compilados
-    files: ['dist/**/*.js'],
-    ignores: ['dist/**', 'templates/**'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: {
-        __dirname: 'readonly',
-        process: true,
-        console: true,
-        require: true,
-        module: true,
-        exports: true,
-      },
-    },
-    rules: {
-      'no-undef': 'off', // Desabilita no-undef para arquivos compilados
-    },
-  },
-  {
     // Configuração para arquivos JavaScript
     files: ['**/*.js'],
     languageOptions: {
@@ -94,9 +72,16 @@ export default [
     rules: {
       'prettier/prettier': 'error',
       'no-console': 'warn',
-      'import/order': 'off',
+      'import/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+        },
+      ],
       'unused-imports/no-unused-imports': 'error',
     },
+    ignores: ['eslint.config.js', 'commitlint.config.js'],
   },
   ...compat.extends('plugin:@typescript-eslint/recommended'),
   ...compat.extends('plugin:prettier/recommended'),
