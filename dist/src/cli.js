@@ -13,11 +13,7 @@ const tick = performance.now()
 dotenv.config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-// Verifica se o NODE_ENV está definido
-if (!process.env.NODE_ENV) {
-  logger.error('Erro: NODE_ENV não está definido.')
-  process.exit(1)
-}
+
 const isDev = process.env.NODE_ENV !== 'production'
 const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
 if (isDev && !existsSync(distDev)) {

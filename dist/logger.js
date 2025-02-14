@@ -39,7 +39,7 @@ class Logger {
         debug: 4,
         clock: 5, // Nível personalizado para logs de tempo
       },
-      level: process.env.NODE_ENV === 'production' ? 'info' : 'clock',
+      level: 'clock',
       transports: [
         new winston.transports.Console({
           format: consoleFormat, // Usa o mesmo formato para todos os níveis
