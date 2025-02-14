@@ -10,7 +10,8 @@
     "baseconfig": "./dist/src/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "dist/templates/.husky/_"
   ],
   "dependencies": {
     "dotenv": "^16.4.7",
