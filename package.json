@@ -11,8 +11,7 @@
   },
   "files": [
     "dist",
-    "dist/templates/.husky/_",
-    "dist/templates/.husky/_/.gitignore"
+    "dist/templates/.husky/_"
   ],
   "dependencies": {
     "dotenv": "^16.4.7",
