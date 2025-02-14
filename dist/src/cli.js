@@ -22,11 +22,11 @@ if (isDev && !existsSync(distDev)) {
 // Caminho para os templates
 const templatesPath = path.join(__dirname, '..', 'templates')
 // Lê os arquivos JSON
-const packageJson = await fs.readJson('./data/packageAttributes.json')
-const toolMappings = await fs.readJson('./data/toolMappings.json')
-const fileMapping = await fs.readJson('./data/fileMapping.json')
-const toolList = await fs.readJson('./data/toolList.json')
-const huskyMapping = await fs.readJson('./data/huskyMapping.json')
+const packageJson = await fs.readJson('./../data/packageAttributes.json')
+const toolMappings = await fs.readJson('./../data/toolMappings.json')
+const fileMapping = await fs.readJson('./../data/fileMapping.json')
+const toolList = await fs.readJson('./../data/toolList.json')
+const huskyMapping = await fs.readJson('./../data/huskyMapping.json')
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
 const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)

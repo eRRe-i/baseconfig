@@ -10,8 +10,7 @@
     "baseconfig": "./dist/src/cli.js"
   },
   "files": [
-    "dist",
-    ".env"
+    "dist"
   ],
   "dependencies": {
     "dotenv": "^16.4.7",
