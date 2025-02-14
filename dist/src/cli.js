@@ -2,7 +2,7 @@
 import path, { dirname } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import { fileURLToPath } from 'url'
-import { logger } from './../logger.js'
+import { logger } from '../logger.js'
 import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
 import { HuskyUtil } from './utils/copyHuskyfiles.js'
@@ -14,19 +14,20 @@ dotenv.config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const isDev = process.env.NODE_ENV !== 'production'
-const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
-if (isDev && !existsSync(distDev)) {
+// logger.debug(__dirname)
+const distDev = path.join(process.cwd(), '')
+if (!existsSync(distDev)) {
   mkdirSync(distDev, { recursive: true })
 }
 // Caminho para os templates
 const templatesPath = path.join(__dirname, '..', 'templates')
 // Lê os arquivos JSON
-const packageJson = await fs.readJson('./../data/packageAttributes.json')
-const toolMappings = await fs.readJson('./../data/toolMappings.json')
-const fileMapping = await fs.readJson('./../data/fileMapping.json')
-const toolList = await fs.readJson('./../data/toolList.json')
-const huskyMapping = await fs.readJson('./../data/huskyMapping.json')
+// logger.debug(process.cwd())
+const packageJson = await fs.readJson(path.join(__dirname, '../data/packageAttributes.json'))
+const toolMappings = await fs.readJson(path.join(__dirname, '../data/toolMappings.json'))
+const fileMapping = await fs.readJson(path.join(__dirname, '../data/fileMapping.json'))
+const toolList = await fs.readJson(path.join(__dirname, '../data/toolList.json'))
+const huskyMapping = await fs.readJson(path.join(__dirname, '../data/huskyMapping.json'))
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
 const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)
