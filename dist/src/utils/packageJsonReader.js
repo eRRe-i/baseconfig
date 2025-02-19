@@ -1,6 +1,7 @@
 import path from 'path'
 import { logger } from '../../logger.js'
 import fs from 'fs-extra'
+import { constants } from 'fs/promises'
 export class PackageJsonReader {
   packageJson
   toolMappings
@@ -19,7 +20,9 @@ export class PackageJsonReader {
     }
     const srcPackageJsonPath = path.join(this.src, 'package.json')
     const destPackageJsonPath = path.join(this.dest, 'package.json')
-    await fs.copy(srcPackageJsonPath, destPackageJsonPath)
+    if (!fs.existsSync(destPackageJsonPath)) {
+      await fs.copyFile(srcPackageJsonPath, destPackageJsonPath)
+    }
     const destPackageJson = await fs.readJson(destPackageJsonPath)
     const dependencies = this.getDependencies(mapping.dependencies)
     destPackageJson.devDependencies = {
