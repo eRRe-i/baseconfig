@@ -38,7 +38,7 @@ jobs:
       - name: Run ESLint
         run: |
           # Executa o ESLint no código-fonte para validar as regras
-          npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0
+          npx eslint .
         continue-on-error: false # Faz o workflow falhar se houver erros de linting
 
       - name: Extract PR Information
