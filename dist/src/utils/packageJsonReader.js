@@ -34,8 +34,8 @@ export class PackageJsonReader {
       ...destPackageJson.scripts,
       ...scripts,
     }
-    if (mapping.config) {
-      destPackageJson.lintStaged = mapping.config
+    if (tool === 'lint-staged') {
+      destPackageJson['lint-staged'] = mapping['lint-staged']
     }
     await fs.writeJson(destPackageJsonPath, destPackageJson, { spaces: 2 })
     logger.success(`"${tool}" atualizada no package.json`)

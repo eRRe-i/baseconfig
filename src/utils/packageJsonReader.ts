@@ -43,8 +43,8 @@ export class PackageJsonReader {
       ...scripts,
     }
 
-    if (mapping.config) {
-      destPackageJson.lintStaged = mapping.config
+    if (tool === 'lint-staged') {
+      destPackageJson['lint-staged'] = mapping['lint-staged']
     }
 
     await fs.writeJson(destPackageJsonPath, destPackageJson, { spaces: 2 })
