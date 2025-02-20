@@ -1,7 +1,7 @@
 interface ToolMapping {
   dependencies: string[]
   scripts: string[]
-  config?: Record<string, string[]>
+  lintStaged?: Record<string, string[]>
 }
 
 interface PackageJson {
