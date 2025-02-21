@@ -24,7 +24,9 @@ if (!process.env.NODE_ENV) {
   process.exit(1)
 }
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = process.env.NODE_ENV != 'production'
+logger.debug(String(process.env.NODE_ENV))
+logger.debug(String(isDev))
 const templatesPath = path.join(__dirname, '..', 'templates')
 const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
 if (isDev && !existsSync(distDev)) {
