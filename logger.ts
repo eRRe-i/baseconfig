@@ -4,14 +4,13 @@ class Logger {
   private logger: winston.Logger
 
   constructor() {
-    // Cores customizadas para cada nível
     const colors = {
       error: 'red',
       warn: 'yellow',
       success: 'green',
       info: 'cyan',
       debug: 'magenta',
-      clock: 'gray', // Adicionei uma cor para o nível "clock"
+      clock: 'gray',
     }
 
     winston.addColors(colors)
@@ -22,13 +21,12 @@ class Logger {
       winston.format.printf(({ level, message }) => {
         const emojiMap = {
           error: '❌',
-          warn: '⚠️ ',
+          warn: '🔔',
           success: '✅',
           debug: '🐛',
-          clock: '⏱️ ', // Emoji para o nível "clock"
+          clock: '⏱️ ',
         }
 
-        // Remove códigos de cores para mapear corretamente o nível
         // eslint-disable-next-line no-control-regex
         const cleanLevel = level.replace(/\x1B\[\d+m/g, '')
         const emoji = emojiMap[cleanLevel] || ''
