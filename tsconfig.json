@@ -11,9 +11,16 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "target": "ESNext",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src/**/*", "eslint.config.js", "logger.ts", "tests/**/*", "vite.config.ts"],
+  "include": [
+    "src/**/*",
+    "eslint.config.js",
+    "logger.ts",
+    "addShebang.ts",
+    "tests/**/*",
+    "rollup.config.js"
+  ],
   "exclude": ["node_modules", "dist", "public"]
 }
