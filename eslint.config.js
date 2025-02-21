@@ -20,7 +20,7 @@ export default [
   {
     // Configuração para arquivos TypeScript
     files: ['**/*.ts'],
-    ignores: ['dist/**', 'templates/**'],
+    ignores: ['dist/**', 'templates/**', 'public/**'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {

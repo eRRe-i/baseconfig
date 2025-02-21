@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import path, { dirname } from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -27,21 +25,23 @@ if (!process.env.NODE_ENV) {
 }
 
 const isDev = process.env.NODE_ENV !== 'production'
+const templatesPath = path.join(__dirname, '..', 'templates')
 const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
-
 if (isDev && !existsSync(distDev)) {
   mkdirSync(distDev, { recursive: true })
 }
 
 // Caminho para os templates
-const templatesPath = path.join(__dirname, '..', 'templates')
-
 // Lê os arquivos JSON
-const packageJson: PackageJson = await fs.readJson('./data/packageAttributes.json')
-const toolMappings: ToolMappings = await fs.readJson('./data/toolMappings.json')
-const fileMapping: FileMapping = await fs.readJson('./data/fileMapping.json')
-const toolList: string[] = await fs.readJson('./data/toolList.json')
-const huskyMapping = await fs.readJson('./data/huskyMapping.json')
+const packageJson: PackageJson = await fs.readJson(
+  path.resolve(__dirname, 'data/packageAttributes.json'),
+)
+const toolMappings: ToolMappings = await fs.readJson(
+  path.resolve(__dirname, 'data/toolMappings.json'),
+)
+const fileMapping: FileMapping = await fs.readJson(path.resolve(__dirname, 'data/fileMapping.json'))
+const toolList: string[] = await fs.readJson(path.resolve(__dirname, 'data/toolList.json'))
+const huskyMapping = await fs.readJson(path.resolve(__dirname, 'data/huskyMapping.json'))
 
 // Instancia as utilitárias
 const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)

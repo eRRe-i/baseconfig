@@ -1,20 +1,23 @@
 {
   "lint-staged": {
-    "files": [".husky/_/husky.sh", ".husky/pre-commit"],
+    "files": [".husky/_/.gitignore", ".husky/_/husky.sh", ".husky/pre-commit"],
     "pre-commit": {
       "filePath": ".husky/pre-commit",
       "content": ["\n . \"$(dirname \"$0\")/_/husky.sh\" \n npx lint-staged \n"]
     }
   },
   "commitlint": {
-    "files": [".husky/_/husky.sh", ".husky/commit-msg"],
-    "commitmsg": {
+    "files": [".husky/_/.gitignore", ".husky/_/husky.sh", ".husky/commit-msg"],
+    "commit-msg": {
       "filePath": ".husky/commit-msg",
       "content": ["npx --no -- commitlint --edit $1"]
     }
   },
   "jest": {
-    "files": [".husky/_/husky.sh", ".husky/pre-commit"],
-    "pre-commit": { "filePath": ".husky/pre-commit", "content": [] }
+    "files": [".husky/_/.gitignore", ".husky/_/husky.sh", ".husky/pre-commit"],
+    "pre-commit": {
+      "filePath": ".husky/pre-commit",
+      "content": []
+    }
   }
 }

@@ -33,7 +33,7 @@ export class HuskyUtil {
 
     await this.createFilesFromTemplate(this.mapping, tool)
     await this.appendFiles(this.mapping, tool, 'gitignore')
-    await this.appendFiles(this.mapping, tool, 'commitlint')
+    await this.appendFiles(this.mapping, tool, 'commit-msg')
     await this.appendFiles(this.mapping, tool, 'pre-commit')
   }
 
@@ -65,6 +65,7 @@ export class HuskyUtil {
     if (!mapping[tool]?.[file]?.filePath) {
       return
     }
+
     const destPath = path.join(this.dest, mapping[tool]?.[file]?.filePath)
     if (await exists(destPath)) {
       if (mapping[tool]?.[file]?.content.length) {

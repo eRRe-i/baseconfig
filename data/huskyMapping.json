@@ -8,13 +8,16 @@
   },
   "commitlint": {
     "files": [".husky/_/.gitignore", ".husky/_/husky.sh", ".husky/commit-msg"],
-    "commitmsg": {
+    "commit-msg": {
       "filePath": ".husky/commit-msg",
       "content": ["npx --no -- commitlint --edit $1"]
     }
   },
   "jest": {
     "files": [".husky/_/.gitignore", ".husky/_/husky.sh", ".husky/pre-commit"],
-    "pre-commit": { "filePath": ".husky/pre-commit", "content": [] }
+    "pre-commit": {
+      "filePath": ".husky/pre-commit",
+      "content": []
+    }
   }
 }

@@ -1,7 +1,6 @@
 import path from 'path'
 import { logger } from '../../logger.js'
 import fs from 'fs-extra'
-import { constants } from 'fs/promises'
 export class PackageJsonReader {
   packageJson
   toolMappings
