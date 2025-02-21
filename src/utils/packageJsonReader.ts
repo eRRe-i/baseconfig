@@ -26,7 +26,7 @@ export class PackageJsonReader {
     const destPackageJsonPath = path.join(this.dest, 'package.json')
 
     if (!fs.existsSync(destPackageJsonPath)) {
-      fs.copyFile(srcPackageJsonPath, destPackageJsonPath)
+      await fs.copyFile(srcPackageJsonPath, destPackageJsonPath)
     }
 
     const destPackageJson: PackageJson = await fs.readJson(destPackageJsonPath)
