@@ -23,8 +23,8 @@ class Logger {
           error: '❌',
           warn: '🔔',
           success: '✅',
-          debug: '🐛',
           clock: '⏱️ ',
+          debug: '🐛',
         }
 
         // eslint-disable-next-line no-control-regex
@@ -40,10 +40,10 @@ class Logger {
         warn: 1,
         success: 2,
         info: 3,
-        debug: 4,
-        clock: 5, // Nível personalizado para logs de tempo
+        clock: 4,
+        debug: 5, // Nível personalizado para logs de tempo
       },
-      level: process.env.NODE_ENV === 'production' ? 'info' : 'clock',
+      level: process.env.NODE_ENV === 'production' ? 'clock' : 'debug',
       transports: [
         new winston.transports.Console({
           format: consoleFormat, // Usa o mesmo formato para todos os níveis
