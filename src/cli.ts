@@ -4,6 +4,7 @@ import { logger } from './../logger.js'
 import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
 import { performance } from 'perf_hooks'
+import { showHelp } from 'commands/help.js'
 import { setupTools } from 'commands/setup.js'
 
 const tick = performance.now()
@@ -26,6 +27,11 @@ const basePath = process.env.NODE_ENV === 'production' ? __dirname : process.cwd
 const toolList: string[] = await fs.readJson(path.resolve(basePath, 'data/toolList.json'))
 
 const argTools = process.argv.slice(2)
+
+if (process.argv.includes('--help')) {
+  showHelp(toolList)
+  process.exit(0)
+}
 
 const tools = validateTools(argTools, toolList)
 await setupTools(tools)
