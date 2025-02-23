@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import path, { dirname } from 'path'
-import require$$0$6, { constants } from 'fs'
 import { fileURLToPath } from 'url'
 import require$$0$2 from 'util'
 import require$$0$1 from 'os'
 import require$$0$3 from 'stream'
 import require$$0$4 from 'buffer'
 import require$$0$5 from 'events'
+import require$$0$6, { constants, existsSync, mkdirSync } from 'fs'
 import require$$3 from 'zlib'
 import 'tty'
 import require$$1 from 'string_decoder'
@@ -14,8 +14,8 @@ import require$$0$7 from 'http'
 import require$$1$1 from 'https'
 import fs, { exists } from 'fs-extra'
 import require$$3$1 from 'crypto'
-import { mkdir, copyFile } from 'fs/promises'
 import { performance } from 'perf_hooks'
+import { mkdir, copyFile } from 'fs/promises'
 
 var commonjsGlobal =
   typeof globalThis !== 'undefined'
@@ -12938,8 +12938,8 @@ class Logger {
           error: '❌',
           warn: '🔔',
           success: '✅',
-          debug: '🐛',
           clock: '⏱️ ',
+          debug: '🐛',
         }
         // eslint-disable-next-line no-control-regex
         const cleanLevel = level.replace(/\x1B\[\d+m/g, '')
@@ -12953,10 +12953,10 @@ class Logger {
         warn: 1,
         success: 2,
         info: 3,
-        debug: 4,
-        clock: 5, // Nível personalizado para logs de tempo
+        clock: 4,
+        debug: 5, // Nível personalizado para logs de tempo
       },
-      level: 'info',
+      level: 'clock',
       transports: [
         new winston.transports.Console({
           format: consoleFormat, // Usa o mesmo formato para todos os níveis
@@ -13379,6 +13379,78 @@ function requireMain() {
 
 var mainExports = requireMain()
 
+function showHelp(toolList) {
+  logger.message(`🛠️  BaseConfig CLI Help
+Usage: baseconfig [options] [tools...]
+
+Options:
+  --help      Mostra esta mensagem de ajuda.
+  --version   Mostra a versão atual do CLI.
+
+Ferramentas Suportadas:
+  ${toolList.join(', ')}
+
+Exemplos:
+  $ baseconfig --help                     # Mostra esta mensagem de ajuda
+  $ baseconfig prettier eslint            # Configura apenas as ferramentas "prettier" e "eslint"
+  $ baseconfig                            # Configura todas as ferramentas disponíveis
+
+`)
+}
+
+const packageJson = await import('./package-k0KO_iMF.js')
+// Exibe a versão do CLI
+function showVersion() {
+  logger.message(`${packageJson['name']} versão: ${packageJson['version']}`)
+}
+
+class CopyFiles {
+  src
+  dest
+  fileMapping
+  constructor(src, dest, fileMapping) {
+    this.src = src
+    this.dest = dest
+    this.fileMapping = fileMapping
+  }
+  async copyFilesFromTemplate(tool) {
+    if (!this.src) {
+      const err = new Error('Caminho de origem não especificado.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
+    }
+    if (!this.dest) {
+      const err = new Error('Caminho de destino não especificado.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
+    }
+    if (!tool) {
+      const err = new Error('Nenhuma ferramenta especificada.')
+      logger.error(`Error em ${tool}: ${err.message}`, err)
+      throw err
+    }
+    const mapping = this.fileMapping[tool]
+    await mkdir(this.dest, { recursive: true })
+    for (const file of mapping) {
+      if (!file) {
+        const err = new Error('Nome do arquivo não especificado.')
+        logger.error(`Error em ${tool}: ${err.message}`, err)
+        process.exit(1)
+      }
+      const srcPath = path.join(this.src, tool, file)
+      const destPath = path.join(this.dest, file)
+      const destDir = path.dirname(destPath)
+      try {
+        await mkdir(destDir, { recursive: true })
+        await copyFile(srcPath, destPath)
+        logger.success(`${file}`)
+      } catch (err) {
+        logger.error(`Falha ao copiar o arquivo "${file}": ${err.message}`, err)
+      }
+    }
+  }
+}
+
 class HuskyUtil {
   src
   dest
@@ -13457,53 +13529,6 @@ class HuskyUtil {
   }
 }
 
-class CopyFiles {
-  src
-  dest
-  fileMapping
-  constructor(src, dest, fileMapping) {
-    this.src = src
-    this.dest = dest
-    this.fileMapping = fileMapping
-  }
-  async copyFilesFromTemplate(tool) {
-    if (!this.src) {
-      const err = new Error('Caminho de origem não especificado.')
-      logger.error(`Error em ${tool}: ${err.message}`, err)
-      throw err
-    }
-    if (!this.dest) {
-      const err = new Error('Caminho de destino não especificado.')
-      logger.error(`Error em ${tool}: ${err.message}`, err)
-      throw err
-    }
-    if (!tool) {
-      const err = new Error('Nenhuma ferramenta especificada.')
-      logger.error(`Error em ${tool}: ${err.message}`, err)
-      throw err
-    }
-    const mapping = this.fileMapping[tool]
-    await mkdir(this.dest, { recursive: true })
-    for (const file of mapping) {
-      if (!file) {
-        const err = new Error('Nome do arquivo não especificado.')
-        logger.error(`Error em ${tool}: ${err.message}`, err)
-        process.exit(1)
-      }
-      const srcPath = path.join(this.src, tool, file)
-      const destPath = path.join(this.dest, file)
-      const destDir = path.dirname(destPath)
-      try {
-        await mkdir(destDir, { recursive: true })
-        await copyFile(srcPath, destPath)
-        logger.success(`${file}`)
-      } catch (err) {
-        logger.error(`Falha ao copiar o arquivo "${file}": ${err.message}`, err)
-      }
-    }
-  }
-}
-
 class PackageJsonReader {
   packageJson
   toolMappings
@@ -13563,45 +13588,60 @@ class PackageJsonReader {
   }
 }
 
+async function setupTools(toolList) {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const basePath = __dirname
+  const templatesPath = path.join(basePath, 'templates')
+  const distDev = path.join(process.cwd(), '')
+  if (!existsSync(distDev)) {
+    mkdirSync(distDev, { recursive: true })
+  }
+  const packageJson = await fs.readJson(path.resolve(basePath, 'data/packageAttributes.json'))
+  const toolMappings = await fs.readJson(path.resolve(basePath, 'data/toolMappings.json'))
+  const fileMapping = await fs.readJson(path.resolve(basePath, 'data/fileMapping.json'))
+  const huskyMapping = await fs.readJson(path.resolve(basePath, 'data/huskyMapping.json'))
+  // Instancia as utilitárias
+  const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
+  const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)
+  const packageJsonReaderUtil = new PackageJsonReader(
+    packageJson,
+    toolMappings,
+    templatesPath,
+    distDev,
+  )
+  for (const tool of toolList) {
+    try {
+      logger.message(`\n🛠️  Configurando a ferramenta "${tool}"...`)
+      await copyFilesUtil.copyFilesFromTemplate(tool)
+      await copyHuskyFiles.copyHuskyFiles(tool)
+      await packageJsonReaderUtil.setupTool(tool)
+      logger.success(`"${tool}" configurada com sucesso!`)
+    } catch (err) {
+      logger.error(`Erro ao processar a ferramenta "${tool}":`, err.message)
+      throw err
+    }
+  }
+}
+
 const tick = performance.now()
 mainExports.config()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const isDev = 'production' != 'production'
 logger.debug(String('production'))
-logger.debug(String(isDev))
-const templatesPath = path.join(__dirname, '..', 'templates')
-const distDev = path.join(process.cwd(), '')
-// Caminho para os templates
-// Lê os arquivos JSON
-const packageJson = await fs.readJson(path.resolve(__dirname, 'data/packageAttributes.json'))
-const toolMappings = await fs.readJson(path.resolve(__dirname, 'data/toolMappings.json'))
-const fileMapping = await fs.readJson(path.resolve(__dirname, 'data/fileMapping.json'))
-const toolList = await fs.readJson(path.resolve(__dirname, 'data/toolList.json'))
-const huskyMapping = await fs.readJson(path.resolve(__dirname, 'data/huskyMapping.json'))
-// Instancia as utilitárias
-const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
-const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)
-const packageJsonReaderUtil = new PackageJsonReader(
-  packageJson,
-  toolMappings,
-  templatesPath,
-  distDev,
-)
+const basePath = __dirname
+const toolList = await fs.readJson(path.resolve(basePath, 'data/toolList.json'))
 const argTools = process.argv.slice(2)
-const tools = validateTools(argTools, toolList)
-for (const tool of tools) {
-  try {
-    logger.message(`\n🛠️  Configurando a ferramenta "${tool}"...`)
-    await copyFilesUtil.copyFilesFromTemplate(tool)
-    await copyHuskyFiles.copyHuskyFiles(tool)
-    await packageJsonReaderUtil.setupTool(tool)
-    logger.success(`"${tool}" configurada com sucesso!`)
-  } catch (err) {
-    logger.error(`Erro ao processar a ferramenta "${tool}":`, err.message)
-    throw err
-  }
+if (process.argv.includes('--help')) {
+  showHelp(toolList)
+  process.exit(0)
 }
+if (process.argv.includes('--version')) {
+  showVersion()
+  process.exit(0)
+}
+const tools = validateTools(argTools, toolList)
+await setupTools(tools)
 const tack = performance.now()
 logger.clock(`${(tack - tick).toFixed(2)} ms`)
 function validateTools(argTools, toolList) {

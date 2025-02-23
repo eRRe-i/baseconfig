@@ -1,15 +1,12 @@
 import path, { dirname } from 'path'
-import { existsSync, mkdirSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { logger } from './../logger.js'
 import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
-import { FileMapping } from 'interfaces/fileInterface.interface.js'
-import { HuskyUtil } from '@utils/copyHuskyfiles.js'
-import { CopyFiles } from '@utils/copyFiles.js'
-import { PackageJsonReader } from './utils/packageJsonReader.js'
-import { PackageJson, ToolMappings } from './interfaces/package.interface.js'
 import { performance } from 'perf_hooks'
+import { showHelp } from 'commands/help.js'
+import { showVersion } from 'commands/version.js'
+import { setupTools } from 'commands/setup.js'
 
 const tick = performance.now()
 
@@ -24,56 +21,27 @@ if (!process.env.NODE_ENV) {
   process.exit(1)
 }
 
-const isDev = process.env.NODE_ENV != 'production'
 logger.debug(String(process.env.NODE_ENV))
-logger.debug(String(isDev))
-const templatesPath = path.join(__dirname, '..', 'templates')
-const distDev = path.join(process.cwd(), isDev ? 'tmp' : '')
-if (isDev && !existsSync(distDev)) {
-  mkdirSync(distDev, { recursive: true })
-}
 
-// Caminho para os templates
-// Lê os arquivos JSON
-const packageJson: PackageJson = await fs.readJson(
-  path.resolve(__dirname, 'data/packageAttributes.json'),
-)
-const toolMappings: ToolMappings = await fs.readJson(
-  path.resolve(__dirname, 'data/toolMappings.json'),
-)
-const fileMapping: FileMapping = await fs.readJson(path.resolve(__dirname, 'data/fileMapping.json'))
-const toolList: string[] = await fs.readJson(path.resolve(__dirname, 'data/toolList.json'))
-const huskyMapping = await fs.readJson(path.resolve(__dirname, 'data/huskyMapping.json'))
+const basePath = process.env.NODE_ENV === 'production' ? __dirname : process.cwd()
 
-// Instancia as utilitárias
-const copyFilesUtil = new CopyFiles(templatesPath, distDev, fileMapping)
-const copyHuskyFiles = new HuskyUtil(templatesPath, distDev, huskyMapping)
-
-const packageJsonReaderUtil = new PackageJsonReader(
-  packageJson,
-  toolMappings,
-  templatesPath,
-  distDev,
-)
+const toolList: string[] = await fs.readJson(path.resolve(basePath, 'data/toolList.json'))
 
 const argTools = process.argv.slice(2)
 
-const tools = validateTools(argTools, toolList)
-
-for (const tool of tools) {
-  try {
-    logger.message(`\n🛠️  Configurando a ferramenta "${tool}"...`)
-
-    await copyFilesUtil.copyFilesFromTemplate(tool)
-    await copyHuskyFiles.copyHuskyFiles(tool)
-    await packageJsonReaderUtil.setupTool(tool)
-
-    logger.success(`"${tool}" configurada com sucesso!`)
-  } catch (err) {
-    logger.error(`Erro ao processar a ferramenta "${tool}":`, err.message)
-    throw err
-  }
+if (process.argv.includes('--help')) {
+  showHelp(toolList)
+  process.exit(0)
 }
+
+if (process.argv.includes('--version')) {
+  showVersion()
+  process.exit(0)
+}
+
+const tools = validateTools(argTools, toolList)
+await setupTools(tools)
+
 const tack = performance.now()
 logger.clock(`${(tack - tick).toFixed(2)} ms`)
 
