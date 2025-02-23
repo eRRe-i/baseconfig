@@ -13,8 +13,8 @@ Ferramentas Suportadas:
 
 Exemplos:
   $ baseconfig --help                     # Mostra esta mensagem de ajuda
+  $ baseconfig --all                      # Configura todas as ferramentas disponíveis
   $ baseconfig prettier eslint            # Configura apenas as ferramentas "prettier" e "eslint"
-  $ baseconfig                            # Configura todas as ferramentas disponíveis
 
 `)
 }

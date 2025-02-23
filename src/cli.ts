@@ -29,13 +29,18 @@ const toolList: string[] = await fs.readJson(path.resolve(basePath, 'data/toolLi
 
 const argTools = process.argv.slice(2)
 
-if (process.argv.includes('--help')) {
+if (process.argv.includes('--help') || argTools.length == 0) {
   showHelp(toolList)
   process.exit(0)
 }
 
 if (process.argv.includes('--version')) {
   showVersion()
+  process.exit(0)
+}
+
+if (process.argv.includes('--all')) {
+  await setupTools(toolList)
   process.exit(0)
 }
 
@@ -46,18 +51,14 @@ const tack = performance.now()
 logger.clock(`${(tack - tick).toFixed(2)} ms`)
 
 function validateTools(argTools: string[], toolList: string[]) {
-  if (argTools.length === 0) {
-    return toolList
-  } else {
-    argTools.forEach((tool: string) => {
-      if (!toolList.some((t) => tool === t)) {
-        const err = new Error(`ferramenta ${tool} não existe na lista`)
-        logger.error(`Error: ${err.message}`, err)
-        throw err
-      }
-    })
-    return argTools
-  }
+  argTools.forEach((tool: string) => {
+    if (!toolList.some((t) => tool === t)) {
+      const err = new Error(`ferramenta ${tool} não existe na lista`)
+      logger.error(`Error: ${err.message}`, err)
+      throw err
+    }
+  })
+  return argTools
 }
 
 export { validateTools }
