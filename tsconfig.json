@@ -9,6 +9,7 @@
     },
     "rootDir": ".",
     "outDir": "./dist",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "ESNext",
     "types": ["node", "jest"],
