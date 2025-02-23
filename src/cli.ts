@@ -39,6 +39,11 @@ if (process.argv.includes('--version')) {
   process.exit(0)
 }
 
+if (process.argv.includes('--all')) {
+  await setupTools(toolList)
+  process.exit(0)
+}
+
 const tools = validateTools(argTools, toolList)
 await setupTools(tools)
 
