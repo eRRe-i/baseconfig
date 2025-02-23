@@ -13392,8 +13392,8 @@ Ferramentas Suportadas:
 
 Exemplos:
   $ baseconfig --help                     # Mostra esta mensagem de ajuda
+  $ baseconfig --all                      # Configura todas as ferramentas disponíveis
   $ baseconfig prettier eslint            # Configura apenas as ferramentas "prettier" e "eslint"
-  $ baseconfig                            # Configura todas as ferramentas disponíveis
 
 `)
 }
@@ -13632,7 +13632,7 @@ logger.debug(String('production'))
 const basePath = __dirname
 const toolList = await fs.readJson(path.resolve(basePath, 'data/toolList.json'))
 const argTools = process.argv.slice(2)
-if (process.argv.includes('--help')) {
+if (process.argv.includes('--help') || argTools.length == 0) {
   showHelp(toolList)
   process.exit(0)
 }
@@ -13640,23 +13640,23 @@ if (process.argv.includes('--version')) {
   showVersion()
   process.exit(0)
 }
+if (process.argv.includes('--all')) {
+  await setupTools(toolList)
+  process.exit(0)
+}
 const tools = validateTools(argTools, toolList)
 await setupTools(tools)
 const tack = performance.now()
 logger.clock(`${(tack - tick).toFixed(2)} ms`)
 function validateTools(argTools, toolList) {
-  if (argTools.length === 0) {
-    return toolList
-  } else {
-    argTools.forEach((tool) => {
-      if (!toolList.some((t) => tool === t)) {
-        const err = new Error(`ferramenta ${tool} não existe na lista`)
-        logger.error(`Error: ${err.message}`, err)
-        throw err
-      }
-    })
-    return argTools
-  }
+  argTools.forEach((tool) => {
+    if (!toolList.some((t) => tool === t)) {
+      const err = new Error(`ferramenta ${tool} não existe na lista`)
+      logger.error(`Error: ${err.message}`, err)
+      throw err
+    }
+  })
+  return argTools
 }
 
 export { validateTools }
