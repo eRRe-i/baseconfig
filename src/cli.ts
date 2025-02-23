@@ -5,6 +5,7 @@ import fs from 'fs-extra'
 import * as dotenv from 'dotenv'
 import { performance } from 'perf_hooks'
 import { showHelp } from 'commands/help.js'
+import { showVersion } from 'commands/version.js'
 import { setupTools } from 'commands/setup.js'
 
 const tick = performance.now()
@@ -30,6 +31,11 @@ const argTools = process.argv.slice(2)
 
 if (process.argv.includes('--help')) {
   showHelp(toolList)
+  process.exit(0)
+}
+
+if (process.argv.includes('--version')) {
+  showVersion()
   process.exit(0)
 }
 
