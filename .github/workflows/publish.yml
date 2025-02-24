@@ -2,9 +2,10 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened] # Executa em PRs abertos, atualizados ou reabertos
+    branches: [develop] # Apenas para o branch develop
   push:
-    branches: [main, beta]
+    branches: [develop, main, beta] # Executa em pushes diretos nas branches develop, main e beta
 
 permissions:
   contents: write
@@ -18,7 +19,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Garante que todos os commits sejam buscados
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
@@ -40,7 +41,9 @@ jobs:
 
   release:
     needs: lint-and-validate # Garante que o linting passe antes de prosseguir com a release
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -54,26 +57,21 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
-          registry-url: https://registry.npmjs.org/
-          scope: '@leandrobataglia'
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Extract PR Information
-        id: pr_info
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+      - name: Generate Timestamp Version
+        id: timestamp_version
         run: |
-          PR_TITLE=$(echo "${{ github.event.pull_request.title }}" | sed 's/^[a-z]*\(:\s*\)\?//I')
-          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
-          echo "PR_TYPE=$(echo "${{ github.event.pull_request.title }}" | grep -oE '^(feat|fix|chore|docs|style|refactor|perf|test)')" >> $GITHUB_ENV
+          TIMESTAMP=$(date -u +"%Y%m%d%H%M%S") # Gera um timestamp no formato YYYYMMDDHHMMSS
+          echo "TIMESTAMP_VERSION=$TIMESTAMP" >> $GITHUB_ENV
 
       - name: Prepare Semantic Release
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git commit --allow-empty -m "${{ env.PR_TYPE }}: ${{ env.PR_TITLE }}" || true
+          git commit --allow-empty -m "chore: generate next build with timestamp ${{ env.TIMESTAMP_VERSION }}" || true
 
       - name: Run Semantic Release
         run: npx semantic-release
