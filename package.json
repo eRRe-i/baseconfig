@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/eRRe-i/baseconfig.git"
   },
+  "whatever": true,
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
