@@ -28,4 +28,5 @@ export default {
       },
     ],
   ],
+  tagFormat: 'v${version}-${process.env.TIMESTAMP}',
 }
