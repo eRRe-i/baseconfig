@@ -64,17 +64,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Generate Timestamp
-        if: github.ref == 'refs/heads/develop'
-        id: timestamp
-        run: |
-          TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
-          echo "Generated timestamp: $TIMESTAMP"
-          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
-
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          TIMESTAMP: ${{ env.TIMESTAMP }}
         run: npx semantic-release

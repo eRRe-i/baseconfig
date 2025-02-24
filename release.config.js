@@ -4,7 +4,7 @@ export default {
     { name: 'beta', channel: 'beta' }, // Versões beta para o branch beta
     {
       name: 'develop',
-      prerelease: '',
+      prerelease: 'next',
       channel: 'next',
     },
   ],
@@ -24,9 +24,7 @@ export default {
       '@semantic-release/npm',
       {
         npmPublish: true,
-        tag: 'next-${process.env.TIMESTAMP}', // Inclui o timestamp na tag do npm
       },
     ],
   ],
-  tagFormat: 'v${version}-${process.env.TIMESTAMP}',
 }
