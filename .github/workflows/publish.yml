@@ -2,9 +2,10 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened] # Executa em PRs abertos, atualizados ou reabertos
+    types: [opened, synchronize, reopened]
+    branches: [develop]
   push:
-    branches: [main, beta] # Executa em pushes diretos nas branches main e beta
+    branches: [develop, main, beta]
 
 permissions:
   contents: write
@@ -39,10 +40,13 @@ jobs:
         run: npx eslint .
 
   release:
-    needs: lint-and-validate # Garante que o linting passe antes de prosseguir com a release
+    needs: lint-and-validate
     if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
-      (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta'))
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' ||
+       github.ref == 'refs/heads/beta' ||
+       github.ref == 'refs/heads/develop')
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -56,27 +60,14 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Extract PR Information
-        id: pr_info
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-        run: |
-          PR_TITLE=$(echo "${{ github.event.pull_request.title }}" | sed 's/^[a-z]*\(:\s*\)\?//I')
-          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
-          echo "PR_TYPE=$(echo "${{ github.event.pull_request.title }}" | grep -oE '^(feat|fix|chore|docs|style|refactor|perf|test)')" >> $GITHUB_ENV
-
-      - name: Prepare Semantic Release
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git commit --allow-empty -m "${{ env.PR_TYPE }}: ${{ env.PR_TITLE }}" || true
-
       - name: Run Semantic Release
-        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
