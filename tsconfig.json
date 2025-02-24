@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "paths": {
+      "@utils/*": ["./utils/*"],
+      "@interfaces/*": ["./interfaces/*"]
+    },
+    "rootDir": ".",
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "types": ["node", "jest"],
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": [
+    "src/**/*",
+    "eslint.config.js",
+    "logger.ts",
+    "addShebang.ts",
+    "tests/**/*",
+    "rollup.config.js"
+  ],
+  "exclude": ["node_modules", "dist", "public"]
+}

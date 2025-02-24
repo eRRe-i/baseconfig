@@ -1,0 +1,10 @@
+{
+  "commitlint": ["commitlint.config.js"],
+  "editorconfig": [".editorconfig"],
+  "eslint": ["eslint.config.js"],
+  "lint-staged": [],
+  "prettier": [".prettierrc.json"],
+  "typescript": ["tsconfig.json"],
+  "jest": ["jest.config.js", "tests/sum.test.ts", "tests/sum.ts"],
+  "logger": ["logger.ts"]
+}

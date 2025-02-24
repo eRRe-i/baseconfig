@@ -1,0 +1,80 @@
+{
+  "name": "@leandrobataglia/baseconfig",
+  "type": "module",
+  "version": "1.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eRRe-i/baseconfig.git"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "bin": {
+    "baseconfig": "./dist/cli.es.js"
+  },
+  "files": [
+    "dist/",
+    "templates/",
+    "data/",
+    ".env"
+  ],
+  "dependencies": {
+    "@rollup/plugin-replace": "^6.0.2",
+    "@types/fs-extra": "^11.0.4",
+    "dotenv": "^16.4.7",
+    "fs-extra": "^10.0.0",
+    "winston": "^3.17.0"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "eslint .",
+    "fix": "eslint . --fix",
+    "cli": "export NODE_ENV=development && tsx ./src/cli.ts",
+    "dist": "node ./dist/cli.es.js",
+    "build": "tsc --noEmit && rollup -c && tsx ./addShebang.ts",
+    "clrtmp": "rm -r tmp",
+    "test": "clear && node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "@eslint/js": "^9.19.0",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@semantic-release/github": "^11.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.1",
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@typescript-eslint/parser": "^8.23.0",
+    "ci": "^2.3.0",
+    "commitlint": "^19.7.1",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "husky": "^8.0.0",
+    "jest": "^29.7.0",
+    "jest-esm-transformer": "^1.0.0",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
+    "rollup": "^4.34.8",
+    "rollup-plugin-add-shebang": "^0.3.1",
+    "semantic-release": "^24.2.2",
+    "ts-jest": "^29.2.5",
+    "tsx": "^4.19.2",
+    "vite": "^6.1.1",
+    "vite-plugin-node-polyfills": "^0.23.0",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}

@@ -1,0 +1,1 @@
+["prettier", "eslint", "commitlint", "lint-staged", "editorconfig", "typescript", "jest", "logger"]
