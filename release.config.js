@@ -6,6 +6,7 @@ export default {
     { name: 'beta', channel: 'beta' }, // Versões beta para o branch beta
     {
       name: 'develop',
+      prerelease: 'next',
       channel: 'next',
     },
   ],
