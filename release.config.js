@@ -1,7 +1,7 @@
 export default {
   branches: [
-    { name: 'main', channel: 'latest' }, // Versões estáveis para o branch main
-    { name: 'beta', channel: 'beta' }, // Versões beta para o branch beta
+    { name: 'main', channel: 'latest' },
+    { name: 'beta', prerelease: 'beta', channel: 'beta' },
     {
       name: 'develop',
       prerelease: 'next',
