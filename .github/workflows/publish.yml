@@ -67,7 +67,10 @@ jobs:
       - name: Generate Timestamp
         if: github.ref == 'refs/heads/develop'
         id: timestamp
-        run: echo "TIMESTAMP=$(date -u +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+        run: |
+          TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
+          echo "Generated timestamp: $TIMESTAMP"
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
       - name: Run Semantic Release
         env:
