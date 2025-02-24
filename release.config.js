@@ -4,7 +4,7 @@ export default {
     { name: 'beta', channel: 'beta' }, // Versões beta para o branch beta
     {
       name: 'develop',
-      prerelease: '${process.env.TIMESTAMP}',
+      prerelease: '',
       channel: 'next',
     },
   ],
